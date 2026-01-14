@@ -4,7 +4,6 @@ use field_names_and_counts::{FieldNames, FieldNamesAndCount};
 
 #[derive(FieldNames)]
 #[allow(dead_code)]
-#[allow(dead_code)]
 struct SimpleStruct {
     hello: String,
     world: String,
