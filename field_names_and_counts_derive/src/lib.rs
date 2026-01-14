@@ -2,7 +2,7 @@ extern crate proc_macro;
 
 use darling::FromDeriveInput;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput};
+use syn::{DeriveInput, parse_macro_input};
 
 mod fields;
 mod variants;

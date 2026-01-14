@@ -1,6 +1,6 @@
-use darling::{ast::Data, FromDeriveInput, FromVariant};
+use darling::{FromDeriveInput, FromVariant, ast::Data};
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use quote::{ToTokens, quote};
 use syn::{Generics, Ident};
 
 #[derive(FromDeriveInput)]
@@ -12,7 +12,7 @@ pub(crate) struct Receiver {
 }
 
 impl Receiver {
-    fn variants_to_emit(&self) -> Vec<String> {
+    pub(crate) fn variants_to_emit(&self) -> Vec<String> {
         self.data
             .as_ref()
             .take_enum()
@@ -33,10 +33,16 @@ impl ToTokens for Receiver {
 
         tokens.extend(quote! {
             #[automatically_derived]
-            impl #impl_generics #ident #ty_generics #where_clause {
-                const VARIANTS: [&'static str; #variants_len] = [
-                    #(#variants),*
-                ];
+            impl #impl_generics ::field_names_and_counts::VariantNamesAndCount for #ident #ty_generics #where_clause {
+                #[inline]
+                fn variant_names() -> &'static [&'static str] {
+                    &[#(#variants),*]
+                }
+
+                #[inline]
+                fn variant_count() -> usize {
+                    #variants_len
+                }
             }
         })
     }

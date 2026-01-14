@@ -1,0 +1,16 @@
+[package]
+name = "field_names_and_counts"
+version = "0.1.0"
+authors = ["Ted Driggs <ted.driggs@outlook.com>", "Contributors"]
+edition = "2024"
+description = """
+Traits for accessing field names and counts at compile time.
+"""
+license = "MIT"
+readme = "../README.md"
+
+[dependencies]
+field_names_and_counts_derive = { version = "0.1.0", path = "../field_names_and_counts_derive" }
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"

@@ -1,6 +1,6 @@
-use darling::{ast::Data, FromDeriveInput, FromField};
+use darling::{FromDeriveInput, FromField, ast::Data};
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use quote::{ToTokens, quote};
 use syn::{Generics, Ident};
 
 #[derive(FromDeriveInput)]
@@ -12,7 +12,7 @@ pub(crate) struct Receiver {
 }
 
 impl Receiver {
-    fn fields_to_emit(&self) -> Vec<String> {
+    pub(crate) fn fields_to_emit(&self) -> Vec<String> {
         self.data
             .as_ref()
             .take_struct()
@@ -33,10 +33,16 @@ impl ToTokens for Receiver {
 
         tokens.extend(quote! {
             #[automatically_derived]
-            impl #impl_generics #ident #ty_generics #where_clause {
-                const FIELDS: [&'static str; #fields_len] = [
-                    #(#fields),*
-                ];
+            impl #impl_generics ::field_names_and_counts::FieldNamesAndCount for #ident #ty_generics #where_clause {
+                #[inline]
+                fn field_names() -> &'static [&'static str] {
+                    &[#(#fields),*]
+                }
+
+                #[inline]
+                fn field_count() -> usize {
+                    #fields_len
+                }
             }
         })
     }

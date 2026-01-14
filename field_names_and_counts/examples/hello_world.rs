@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use field_names::FieldNames;
+use field_names_and_counts::{FieldNames, FieldNamesAndCount};
 
 #[derive(FieldNames)]
 struct Example {
@@ -12,5 +12,6 @@ struct Example {
 }
 
 fn main() {
-    println!("{:?}", Example::FIELDS);
+    println!("Field names: {:?}", Example::field_names());
+    println!("Field count: {}", Example::field_count());
 }

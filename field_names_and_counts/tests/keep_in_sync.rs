@@ -25,7 +25,7 @@ use std::{
     net::{AddrParseError, IpAddr},
 };
 
-use field_names::FieldNames;
+use field_names_and_counts::{FieldNames, FieldNamesAndCount};
 
 #[derive(FieldNames, PartialEq, Eq, PartialOrd, Ord)]
 #[allow(dead_code)]
@@ -108,8 +108,8 @@ struct Raw {
 fn base_and_view_in_sync_preserve_source_order() {
     const DELIBERATELY_OMITTED_FROM_VIEW: &[&str] = &["lorem_computation"];
 
-    let base_fields = Base::FIELDS.iter().collect::<Vec<_>>();
-    let view_fields = View::FIELDS
+    let base_fields = Base::field_names().iter().collect::<Vec<_>>();
+    let view_fields = View::field_names()
         .iter()
         .chain(DELIBERATELY_OMITTED_FROM_VIEW)
         .collect::<Vec<_>>();
@@ -120,8 +120,8 @@ fn base_and_view_in_sync_preserve_source_order() {
 /// by adding them to a pair of `BTreeSet` instances and then make sure that `base - partial_view = {}`.
 #[test]
 fn base_and_partial_view_in_sync_ignore_source_order() {
-    let base_fields = Base::FIELDS.iter().collect::<BTreeSet<_>>();
-    let partial_view_fields = PartialView::FIELDS.iter().collect::<BTreeSet<_>>();
+    let base_fields = Base::field_names().iter().collect::<BTreeSet<_>>();
+    let partial_view_fields = PartialView::field_names().iter().collect::<BTreeSet<_>>();
 
     let unexpected_fields = partial_view_fields
         .difference(&base_fields)
@@ -136,12 +136,12 @@ fn base_and_partial_view_in_sync_ignore_source_order() {
 #[should_panic]
 fn base_and_raw_not_in_sync() {
     // This test won't even compile if Base and Raw have different numbers of fields
-    // assert_eq!(Base::FIELDS, Raw::FIELDS);
+    // assert_eq!(Base::field_names(), Raw::field_names());
 
     const KNOWN_OMISSIONS_FROM_RAW: &[&str] = &["lorem_computation"];
 
-    let base_fields = Base::FIELDS.iter().collect::<Vec<_>>();
-    let raw_fields = Raw::FIELDS
+    let base_fields = Base::field_names().iter().collect::<Vec<_>>();
+    let raw_fields = Raw::field_names()
         .iter()
         .chain(KNOWN_OMISSIONS_FROM_RAW)
         .collect::<Vec<_>>();
