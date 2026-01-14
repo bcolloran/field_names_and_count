@@ -2,73 +2,90 @@ name: CI
 
 on:
   push:
+    branches: [ "main", "master" ]
   pull_request:
-  schedule: [cron: "40 1 * * *"]
+    branches: [ "main", "master" ]
 
 env:
-  RUST_BACKTRACE: 1
+  CARGO_TERM_COLOR: always
 
 jobs:
   test:
-    name: Test Rust ${{ matrix.rust }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { rust: nightly, os: ubuntu-latest }
-          - { rust: nightly, os: macos-latest }
-          - { rust: nightly, os: windows-latest }
-          - { rust: stable, os: ubuntu-latest }
-          - { rust: stable, os: macos-latest }
-          - { rust: stable, os: windows-latest }
-          - { rust: 1.48.0, os: ubuntu-latest }
-          - { rust: 1.48.0, os: macos-latest }
-          - { rust: 1.48.0, os: windows-latest }
+    name: Test
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Cache cargo registry
+        uses: actions/cache@v4
         with:
-          toolchain: ${{ matrix.rust }}
-          override: true
-      - uses: Swatinem/rust-cache@v1
-      - name: Check Cargo availability
-        run: cargo --version
-      - run: cargo test --verbose --all
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Cache cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Cache cargo build
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Run tests
+        run: cargo test --verbose
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Install tarpaulin
+        run: cargo install cargo-tarpaulin
+      
+      - name: Generate coverage
+        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out xml
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./cobertura.xml
+          fail_ci_if_error: false
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      
+      - name: Check formatting
+        run: cargo fmt --all -- --check
 
   clippy:
-    name: Lint with clippy
+    name: Clippy
     runs-on: ubuntu-latest
-    env:
-      RUSTFLAGS: -Dwarnings
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
           components: clippy
-      - uses: Swatinem/rust-cache@v1
+      
       - name: Run clippy
-        uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-  rustfmt:
-    name: Verify code formatting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: rustfmt
-      - uses: Swatinem/rust-cache@v1
-      - name: Run fmt --all -- --check
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+        run: cargo clippy --all-targets --all-features -- -D warnings
