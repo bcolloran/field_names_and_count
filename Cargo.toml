@@ -1,12 +1,10 @@
 [package]
-name = "field_names"
-version = "0.2.0"
-authors = ["Ted Driggs <ted.driggs@outlook.com>"]
-edition = "2018"
-repository = "https://github.com/TedDriggs/field_names"
-documentation = "https://docs.rs/field_names/0.2.0"
+name = "field_names_and_counts"
+version = "0.1.0"
+authors = ["Ted Driggs <ted.driggs@outlook.com>", "Contributors"]
+edition = "2024"
 description = """
-A proc-macro for exposing a struct's field names at runtime.
+A trait and derive macro to get field names and counts for structs.
 """
 license = "MIT"
 readme = "README.md"
@@ -18,6 +16,12 @@ darling = "0.13.1"
 proc-macro2 = "1"
 quote = "1.0.14"
 syn = { version = "1.0.84", features = ["full"] }
+
+[dev-dependencies]
+test-case = "3.3.1"
+proptest = "1.9.0"
+pretty_assertions = "1.4.1"
+
 
 [lib]
 proc-macro = true
