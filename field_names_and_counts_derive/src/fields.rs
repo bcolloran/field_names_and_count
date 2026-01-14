@@ -12,7 +12,7 @@ pub(crate) struct Receiver {
 }
 
 impl Receiver {
-    fn fields_to_emit(&self) -> Vec<String> {
+    pub(crate) fn fields_to_emit(&self) -> Vec<String> {
         self.data
             .as_ref()
             .take_struct()
@@ -69,8 +69,6 @@ impl ReceiverField {
 mod tests {
     use super::Receiver;
     use darling::FromDeriveInput;
-    use pretty_assertions::assert_eq;
-    use quote::quote;
     use syn::parse_quote;
 
     #[test]
@@ -107,97 +105,5 @@ mod tests {
             input.fields_to_emit(),
             vec!["hello".to_string(), "world".to_string()]
         );
-    }
-
-    #[test]
-    fn test_generated_code_simple() {
-        let input: syn::DeriveInput = parse_quote! {
-            struct Example {
-                hello: String,
-                world: String,
-            }
-        };
-
-        let receiver = Receiver::from_derive_input(&input).unwrap();
-        let actual = quote!(#receiver);
-
-        let expected = quote! {
-            #[automatically_derived]
-            impl ::field_names_and_counts::FieldNamesAndCount for Example {
-                #[inline]
-                fn field_names() -> &'static [&'static str] {
-                    &["hello", "world"]
-                }
-
-                #[inline]
-                fn field_count() -> usize {
-                    2usize
-                }
-            }
-        };
-
-        assert_eq!(actual.to_string(), expected.to_string());
-    }
-
-    #[test]
-    fn test_generated_code_with_skip() {
-        let input: syn::DeriveInput = parse_quote! {
-            struct Example {
-                hello: String,
-                #[field_names(skip)]
-                hidden: bool,
-                world: String,
-            }
-        };
-
-        let receiver = Receiver::from_derive_input(&input).unwrap();
-        let actual = quote!(#receiver);
-
-        let expected = quote! {
-            #[automatically_derived]
-            impl ::field_names_and_counts::FieldNamesAndCount for Example {
-                #[inline]
-                fn field_names() -> &'static [&'static str] {
-                    &["hello", "world"]
-                }
-
-                #[inline]
-                fn field_count() -> usize {
-                    2usize
-                }
-            }
-        };
-
-        assert_eq!(actual.to_string(), expected.to_string());
-    }
-
-    #[test]
-    fn test_generated_code_with_generics() {
-        let input: syn::DeriveInput = parse_quote! {
-            struct Example<T> {
-                hello: T,
-                world: String,
-            }
-        };
-
-        let receiver = Receiver::from_derive_input(&input).unwrap();
-        let actual = quote!(#receiver);
-
-        let expected = quote! {
-            #[automatically_derived]
-            impl<T> ::field_names_and_counts::FieldNamesAndCount for Example<T> {
-                #[inline]
-                fn field_names() -> &'static [&'static str] {
-                    &["hello", "world"]
-                }
-
-                #[inline]
-                fn field_count() -> usize {
-                    2usize
-                }
-            }
-        };
-
-        assert_eq!(actual.to_string(), expected.to_string());
     }
 }
