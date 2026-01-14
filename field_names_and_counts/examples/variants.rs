@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use field_names::VariantNames;
+use field_names_and_counts::{VariantNames, VariantNamesAndCount};
 
 #[derive(VariantNames)]
 enum Example {
@@ -14,5 +14,6 @@ enum Example {
 }
 
 fn main() {
-    println!("{:?}", Example::VARIANTS);
+    println!("Variant names: {:?}", Example::variant_names());
+    println!("Variant count: {}", Example::variant_count());
 }

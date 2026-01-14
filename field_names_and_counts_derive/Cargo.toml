@@ -1,21 +1,23 @@
-[workspace]
-members = [
-    "field_names_and_counts",
-    "field_names_and_counts_derive",
-]
-resolver = "2"
-
-[workspace.package]
+[package]
+name = "field_names_and_counts_derive"
 version = "0.1.0"
 authors = ["Ted Driggs <ted.driggs@outlook.com>", "Contributors"]
 edition = "2024"
+description = """
+Derive macros for field_names_and_counts.
+"""
 license = "MIT"
 
-[workspace.dependencies]
+[dependencies]
 darling = "0.13.1"
 proc-macro2 = "1"
 quote = "1.0.14"
 syn = { version = "1.0.84", features = ["full"] }
+
+[dev-dependencies]
 test-case = "3.3.1"
 proptest = "1.9.0"
 pretty_assertions = "1.4.1"
+
+[lib]
+proc-macro = true
