@@ -17,4 +17,4 @@ Refer to the file main file `AGENTS.md` in the repo `https://github.com/bcollora
 
 This repo must be accessed by the agent at the start of every task to ensure it has the latest coding standards and guidelines.
 
-**If the agent is not able to access that repo for any reason (network issues, offline mode, etc.), it must immediately halt work on the task and report the issue to the user.**
+**If the agent is not able to access that repo (network issues, offline mode, etc.), it must halt work on the task and report the issue to the user.**
