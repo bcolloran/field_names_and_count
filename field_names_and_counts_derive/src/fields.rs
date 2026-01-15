@@ -69,6 +69,8 @@ impl ReceiverField {
 mod tests {
     use super::Receiver;
     use darling::FromDeriveInput;
+    use pretty_assertions::assert_eq;
+    use quote::{ToTokens, quote};
     use syn::parse_quote;
 
     #[test]
@@ -105,5 +107,35 @@ mod tests {
             input.fields_to_emit(),
             vec!["hello".to_string(), "world".to_string()]
         );
+    }
+
+    #[test]
+    fn to_tokens_emits_impl() {
+        let input = Receiver::from_derive_input(&parse_quote! {
+            #[derive(FieldNames)]
+            struct Example {
+                hello: String,
+                world: String,
+            }
+        })
+        .unwrap();
+
+        let actual = input.to_token_stream();
+        let expected = quote! {
+            #[automatically_derived]
+            impl ::field_names_and_counts::FieldNamesAndCount for Example {
+                #[inline]
+                fn field_names() -> &'static [&'static str] {
+                    &["hello", "world"]
+                }
+
+                #[inline]
+                fn field_count() -> usize {
+                    2usize
+                }
+            }
+        };
+
+        assert_eq!(actual.to_string(), expected.to_string());
     }
 }
