@@ -82,6 +82,7 @@ fn test_all_skipped() {
 
 #[derive(VariantNames)]
 #[allow(dead_code)]
+#[allow(clippy::enum_variant_names)]
 enum MixedVariants {
     UnitVariant,
     TupleVariant(String, i32),

@@ -59,6 +59,25 @@ impl TryFrom<Raw> for Base {
     }
 }
 
+#[test]
+fn base_try_from_raw_populates_fields() {
+    let raw = Raw {
+        dest: "127.0.0.1".to_string(),
+        lorem: "LoRem".to_string(),
+        ipsum: "IPSUM".to_string(),
+        dolor: "DOLOR".to_string(),
+    };
+
+    let base = Base::try_from(raw).expect("base conversion should succeed");
+
+    assert_eq!(base.target, "127.0.0.1".parse::<IpAddr>().unwrap());
+    assert_eq!(base.lorem, "LoRem");
+    assert_eq!(base.ipsum, "IPSUM");
+    assert_eq!(base.dolor, "DOLOR");
+    assert_eq!(base.lorem_computation, "lorem");
+    assert!(!base.secret);
+}
+
 /// A view of `Base`.
 ///
 /// # Guarantees
