@@ -1,7 +1,7 @@
 # field_names_and_counts
 
 [![CI](https://github.com/bcolloran/field_names_and_count/actions/workflows/ci.yml/badge.svg)](https://github.com/bcolloran/field_names_and_count/actions/workflows/ci.yml)
-[![Codecov](https://codecov.io/gh/bcolloran/field_names_and_count/branch/main/graph/badge.svg)](https://codecov.io/gh/bcolloran/field_names_and_count)
+[![Codecov](https://codecov.io/gh/bcolloran/field_names_and_count/branch/master/graph/badge.svg)](https://codecov.io/gh/bcolloran/field_names_and_count)
 
 Derive macros and traits for getting field/variant names and counts at compile time.
 
