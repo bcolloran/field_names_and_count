@@ -1,21 +1,4 @@
-//! Traits for accessing field names and counts at compile time.
-//!
-//! This crate provides traits that are automatically implemented by the derive macros
-//! from the `field_names_and_counts_derive` crate.
-//!
-//! # Example
-//! ```
-//! use field_names_and_counts::FieldNamesAndCount;
-//!
-//! #[derive(field_names_and_counts::FieldNames)]
-//! struct MyStruct {
-//!     field1: String,
-//!     field2: u32,
-//! }
-//!
-//! assert_eq!(MyStruct::field_names(), &["field1", "field2"]);
-//! assert_eq!(MyStruct::field_count(), 2);
-//! ```
+#![doc = include_str!("../README.md")]
 
 /// Trait for accessing field names and count at compile time.
 ///
