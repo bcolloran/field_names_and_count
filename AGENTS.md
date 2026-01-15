@@ -1,4 +1,7 @@
- ***IMPORTANT: when retrieving content from urls, use the fetch tools built-in to the agent environment, DO NOT USE `curl` or a python script or some other crazy solution! DO NOT USE CURL!!!*** (Exceptions: OpenAI Codex, Github Copilot _CLOUD_ session *MAY* use curl. ***VSCODE SESSIONS MAY NEVER USE CURL!***)
+ ***IMPORTANT: when retrieving content from urls, use tools built in to the agent environment for accessing urls if available***.  You may only `curl` or a python script or some other crazy solution if there is no built in tool for accessing URLS!
+Special notes depending on agent:
+  - OpenAI Codex *MUST* use curl (no build in solution)
+  - Any client-side VsCode session ***MAY NEVER EVER USE CURL OR OTHER SOLUTIONS***. VsCode has built in tools that the agent must use.
 
 Get a list files of all the files in the agent guidelines repo from the url: `https://api.github.com/repos/bcolloran/agents_md/git/trees/main?recursive=1`. 
 
