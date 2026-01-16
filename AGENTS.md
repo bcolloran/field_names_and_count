@@ -18,3 +18,8 @@ Refer to the file main file `AGENTS.md` in the repo `https://github.com/bcollora
 This repo must be accessed by the agent at the start of every task to ensure it has the latest coding standards and guidelines.
 
 **If the agent is not able to access that repo (network issues, offline mode, etc.), it must halt work on the task and report the issue to the user.**
+
+
+# Special instruction for this repo
+
+`./field_names_and_counts/README.md` should mirror the content of `./README.md` exactly. The version at the crate root is the source of truth. If it is updated, be sure to copy the changes to `./field_names_and_counts/README.md`.

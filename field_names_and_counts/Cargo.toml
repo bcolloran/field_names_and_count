@@ -7,7 +7,7 @@ description = """
 Traits for accessing field names and counts at compile time.
 """
 license = "MIT"
-readme = "../README.md"
+readme = "README.md"
 
 [dependencies]
 field_names_and_counts_derive = { version = "0.1.0", path = "../field_names_and_counts_derive" }
